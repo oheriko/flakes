@@ -6,39 +6,41 @@
   };
 
   outputs =
+    { self, utils, ... }:
     {
-      self,
-      nixpkgs,
-      utils,
-      mcp,
-    }:
-    let
-      systems = utils.lib.defaultSystems;
-      perSystem = utils.lib.eachSystem systems (
-        system:
-        let
-          pkgs = import nixpkgs { inherit system; };
-        in
-        {
-          devShells.default = pkgs.mkShell {
-            packages = [
-              mcp.packages.${system}.default
-              pkgs.bun
-              pkgs.nixfmt-rfc-style
-              pkgs.nodejs_24
-              pkgs.tailwindcss-language-server
-              pkgs.typescript-language-server
-              pkgs.uv
-            ];
-          };
-        }
-      );
-    in
-    perSystem
-    // {
-      templates.default = {
-        path = ./.;
-        description = "Erik's base flake with devShell setup for MCP etc.";
+      templates = {
+        default = {
+          path = ./templates/typescript;
+          description = "Erik's base flake with TypeScript devShell setup for MCP etc.";
+        };
+        astro = {
+          path = ./templates/astro;
+          description = "Erik's Astro devShell setup.";
+        };
+        typescript = {
+          path = ./templates/typescript;
+          description = "Erik's TypeScript devShell setup.";
+        };
+        rust = {
+          path = ./templates/rust;
+          description = "Erik's Rust devShell setup.";
+        };
+        go = {
+          path = ./templates/go;
+          description = "Erik's Go devShell setup.";
+        };
+        python = {
+          path = ./templates/rust;
+          description = "Erik's Python devShell setup.";
+        };
+        lua = {
+          path = ./templates/rust;
+          description = "Erik's Lua devShell setup.";
+        };
+        zig = {
+          path = ./templates/rust;
+          description = "Erik's Zig devShell setup.";
+        };
       };
     };
 }
