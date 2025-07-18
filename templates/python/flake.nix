@@ -14,11 +14,19 @@
         devShells.default = pkgs.mkShell {
           packages = [
             pkgs.python3
-            pkgs.uv
             pkgs.ruff
+            pkgs.ty
+            pkgs.uv
           ];
           shellHook = ''
-            export PATH="$(pwd)/.venv/bin:$PATH"
+            if [ ! -d .venv ]; then
+              echo "Initializing uv .venv..."
+              uv venv .venv --prompt project
+            fi
+            export VIRTUAL_ENV="$PWD/.venv"
+            export PATH="$VIRTUAL_ENV/bin:$PATH"
+            export UV_PYTHON_DOWNLOADS=never
+            export UV_PYTHON_EXECUTABLE="${pkgs.python3}/bin/python"
           '';
         };
       }
