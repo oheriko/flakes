@@ -30,15 +30,15 @@
           description = "Erik's Go devShell setup.";
         };
         python = {
-          path = ./templates/rust;
+          path = ./templates/python;
           description = "Erik's Python devShell setup.";
         };
         lua = {
-          path = ./templates/rust;
+          path = ./templates/lua;
           description = "Erik's Lua devShell setup.";
         };
         zig = {
-          path = ./templates/rust;
+          path = ./templates/zig;
           description = "Erik's Zig devShell setup.";
         };
       };
