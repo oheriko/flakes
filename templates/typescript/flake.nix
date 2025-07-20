@@ -2,7 +2,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     utils.url = "github:numtide/flake-utils";
-    base.url = "path:../../base";
+    base.url = "github:oheriko/flakes";
   };
 
   outputs =
@@ -13,10 +13,10 @@
       ...
     }:
     utils.lib.eachDefaultSystem (system: {
-      devShells.default = base.lib.${system}.mkTypeScriptShell [ ];
+      devShells.default = base.lib.${system}.mkTypescriptShell [ ];
 
       # Or if you need extra packages:
-      # devShells.default = base-flake.lib.${system}.mkTypeScriptShell [
+      # devShells.default = base.lib.${system}.mkTypescriptShell [
       #   # Extra packages specific to this project
       # ];
     });

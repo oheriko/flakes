@@ -210,9 +210,13 @@
       };
     })
     // {
-      # Export templates that use the base flake
+      # Export templates that use this flake directly
       templates = {
         default = {
+          path = ./templates/typescript;
+          description = "TypeScript development environment using base flake";
+        };
+        typescript = {
           path = ./templates/typescript;
           description = "TypeScript development environment using base flake";
         };
