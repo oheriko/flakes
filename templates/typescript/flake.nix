@@ -2,32 +2,22 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     utils.url = "github:numtide/flake-utils";
-    mcp.url = "github:ravitemer/mcp-hub";
+    base.url = "path:../../base";
   };
+
   outputs =
     {
       nixpkgs,
       utils,
-      mcp,
+      base,
       ...
     }:
-    utils.lib.eachDefaultSystem (
-      system:
-      let
-        pkgs = import nixpkgs { inherit system; };
-      in
-      {
-        devShells.default = pkgs.mkShell {
-          packages = [
-            mcp.packages.${system}.default
-            pkgs.bun
-            pkgs.nixfmt-rfc-style
-            pkgs.nodejs_24
-            pkgs.tailwindcss-language-server
-            pkgs.typescript-language-server
-            pkgs.uv
-          ];
-        };
-      }
-    );
+    utils.lib.eachDefaultSystem (system: {
+      devShells.default = base.lib.${system}.mkTypeScriptShell [ ];
+
+      # Or if you need extra packages:
+      # devShells.default = base-flake.lib.${system}.mkTypeScriptShell [
+      #   # Extra packages specific to this project
+      # ];
+    });
 }
