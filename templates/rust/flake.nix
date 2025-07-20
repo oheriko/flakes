@@ -2,33 +2,17 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     utils.url = "github:numtide/flake-utils";
-    rust-overlay.url = "github:oxalica/rust-overlay";
+    base.url = "github:oheriko/flakes";
   };
+
   outputs =
     {
-      self,
       nixpkgs,
       utils,
-      rust-overlay,
+      base,
       ...
     }:
-    utils.lib.eachDefaultSystem (
-      system:
-      let
-        overlays = [ (import rust-overlay) ];
-        pkgs = import nixpkgs { inherit system overlays; };
-      in
-      {
-        devShells.default = pkgs.mkShell {
-          packages = [
-            pkgs.rust-bin.stable.latest.default
-            pkgs.cargo-watch
-            pkgs.rust-analyzer
-            pkgs.clippy
-            pkgs.rustfmt
-          ];
-          RUST_BACKTRACE = "1";
-        };
-      }
-    );
+    utils.lib.eachDefaultSystem (system: {
+      devShells.default = base.lib.${system}.mkRustShell [ ];
+    });
 }

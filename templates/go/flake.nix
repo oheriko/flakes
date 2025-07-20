@@ -2,35 +2,17 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     utils.url = "github:numtide/flake-utils";
-    mcp.url = "github:ravitemer/mcp-hub";
+    base.url = "github:oheriko/flakes";
   };
+
   outputs =
     {
       nixpkgs,
       utils,
-      mcp,
+      base,
       ...
     }:
-    utils.lib.eachDefaultSystem (
-      system:
-      let
-        pkgs = import nixpkgs { inherit system; };
-      in
-      {
-        devShells.default = pkgs.mkShell {
-          packages = [
-            mcp.packages.${system}.default
-            pkgs.go
-            pkgs.gopls
-            pkgs.golangci-lint
-            pkgs.go-tools
-            pkgs.delve
-          ];
-          shellHook = ''
-            export GOPATH="$HOME/go"
-            export PATH="$GOPATH/bin:$PATH"
-          '';
-        };
-      }
-    );
+    utils.lib.eachDefaultSystem (system: {
+      devShells.default = base.lib.${system}.mkGoShell [ ];
+    });
 }
