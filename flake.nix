@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     utils.url = "github:numtide/flake-utils";
-    mcp.url = "github:ravitemer/mcp-hub";
+    mcp.url = "github:ravitemer/mcphub.nvim";
   };
 
   outputs =
@@ -21,6 +21,7 @@
         pkgs.nixfmt-rfc-style
         pkgs.nodejs_24
         pkgs.uv
+        pkgs.vectorcode
       ];
 
       languagePackages = {
