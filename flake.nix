@@ -25,6 +25,7 @@
 
       languagePackages = {
         typescript = system: pkgs: [
+          pkgs.biome
           pkgs.bun
           pkgs.tailwindcss-language-server
           pkgs.typescript-language-server
