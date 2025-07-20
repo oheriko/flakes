@@ -2,15 +2,9 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     utils.url = "github:numtide/flake-utils";
-    mcp.url = "github:ravitemer/mcp-hub";
   };
   outputs =
-    {
-      nixpkgs,
-      utils,
-      mcp,
-      ...
-    }:
+    { nixpkgs, utils, ... }:
     utils.lib.eachDefaultSystem (
       system:
       let
@@ -19,7 +13,6 @@
       {
         devShells.default = pkgs.mkShell {
           packages = [
-            mcp.packages.${system}.default
             pkgs.go
             pkgs.gopls
             pkgs.golangci-lint

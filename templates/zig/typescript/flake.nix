@@ -6,6 +6,7 @@
   };
   outputs =
     {
+      self,
       nixpkgs,
       utils,
       mcp,
@@ -20,16 +21,13 @@
         devShells.default = pkgs.mkShell {
           packages = [
             mcp.packages.${system}.default
-            pkgs.go
-            pkgs.gopls
-            pkgs.golangci-lint
-            pkgs.go-tools
-            pkgs.delve
+            pkgs.bun
+            pkgs.nixfmt-rfc-style
+            pkgs.nodejs_24
+            pkgs.tailwindcss-language-server
+            pkgs.typescript-language-server
+            pkgs.uv
           ];
-          shellHook = ''
-            export GOPATH="$HOME/go"
-            export PATH="$GOPATH/bin:$PATH"
-          '';
         };
       }
     );

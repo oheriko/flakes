@@ -2,24 +2,31 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     utils.url = "github:numtide/flake-utils";
+    mcp.url = "github:ravitemer/mcp-hub";
   };
   outputs =
     {
-      self,
       nixpkgs,
       utils,
+      mcp,
       ...
     }:
     utils.lib.eachDefaultSystem (
       system:
       let
         pkgs = import nixpkgs { inherit system; };
-        typescriptBase = (import ../typescript/flake.nix).outputs { inherit nixpkgs utils; };
       in
       {
         devShells.default = pkgs.mkShell {
-          packages = typescriptBase.devShells.typescriptBase.buildInputs ++ [
+          packages = [
+            mcp.packages.${system}.default
             pkgs.astro-language-server
+            pkgs.bun
+            pkgs.nixfmt-rfc-style
+            pkgs.nodejs_24
+            pkgs.tailwindcss-language-server
+            pkgs.typescript-language-server
+            pkgs.uv
           ];
         };
       }

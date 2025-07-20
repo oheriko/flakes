@@ -20,16 +20,9 @@
         devShells.default = pkgs.mkShell {
           packages = [
             mcp.packages.${system}.default
-            pkgs.go
-            pkgs.gopls
-            pkgs.golangci-lint
-            pkgs.go-tools
-            pkgs.delve
+            pkgs.nodejs_24
+            pkgs.uv
           ];
-          shellHook = ''
-            export GOPATH="$HOME/go"
-            export PATH="$GOPATH/bin:$PATH"
-          '';
         };
       }
     );

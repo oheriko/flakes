@@ -2,15 +2,9 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     utils.url = "github:numtide/flake-utils";
-    mcp.url = "github:ravitemer/mcp-hub";
   };
   outputs =
-    {
-      nixpkgs,
-      utils,
-      mcp,
-      ...
-    }:
+    { nixpkgs, utils, ... }:
     utils.lib.eachDefaultSystem (
       system:
       let
@@ -19,9 +13,6 @@
       {
         devShells.default = pkgs.mkShell {
           packages = [
-            mcp.packages.${system}.default
-            pkgs.nixfmt-rfc-style
-            pkgs.nodejs_24
             pkgs.python3
             pkgs.ruff
             pkgs.ty
