@@ -12,8 +12,8 @@
     {
       nixpkgs,
       utils,
-      mcp,
-      mcpnvim,
+      mcp-hub,
+      mcphub,
       ...
     }:
     let
