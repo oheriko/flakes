@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     utils.url = "github:numtide/flake-utils";
-    mcp.url = "github:ravitemer/mcphub.nvim";
+    mcp.url = "github:ravitemer/mcp-hub.nvim";
   };
 
   outputs =
