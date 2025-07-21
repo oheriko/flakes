@@ -4,7 +4,8 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     utils.url = "github:numtide/flake-utils";
-    mcp.url = "github:ravitemer/mcp-hub.nvim";
+    mcp.url = "github:ravitemer/mcp-hub";
+    mcpnvim.url = "github:ravitemer/mcphub.nvim";
   };
 
   outputs =
@@ -12,11 +13,12 @@
       nixpkgs,
       utils,
       mcp,
+      mcpnvim,
       ...
     }:
     let
       commonPackages = system: pkgs: [
-        mcp.packages.${system}.default
+        mcpnvim.packages.${system}.default
         pkgs.nil
         pkgs.nixfmt-rfc-style
         pkgs.nodejs_24
