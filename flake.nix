@@ -4,22 +4,16 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     utils.url = "github:numtide/flake-utils";
-    mcp-hub.url = "github:ravitemer/mcp-hub";
-    mcphub.url = "github:ravitemer/mcphub.nvim";
   };
 
   outputs =
     {
       nixpkgs,
       utils,
-      mcp-hub,
-      mcphub,
       ...
     }:
     let
       commonPackages = system: pkgs: [
-        mcp-hub.packages."${system}".default
-        mcphub.packages.${system}.default
         pkgs.nil
         pkgs.nixfmt-rfc-style
         pkgs.nodejs_24
