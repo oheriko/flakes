@@ -17,6 +17,7 @@
         pkgs.nil
         pkgs.nixfmt-rfc-style
         pkgs.nodejs_24
+        pkgs.tree-sitter
         pkgs.uv
         pkgs.vectorcode
       ];
