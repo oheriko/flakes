@@ -12,12 +12,13 @@
       base,
       ...
     }:
-    utils.lib.eachDefaultSystem (system: {
-      devShells.default = base.lib.${system}.mkTypescriptShell [ ];
-
-      # Or if you need extra packages:
-      # devShells.default = base.lib.${system}.mkTypescriptShell [
-      #   # Extra packages specific to this project
-      # ];
-    });
+    utils.lib.eachDefaultSystem (
+      system:
+      let
+        pkgs = import nixpkgs { inherit system; };
+      in
+      {
+        devShells.default = base.lib.${system}.mkTypescriptShell [ ];
+      }
+    );
 }
