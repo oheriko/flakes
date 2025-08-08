@@ -83,7 +83,7 @@
             pkgs.cargo-nextest
             pkgs.cargo-deny
             pkgs.cargo-audit
-            pkgs.cargo-llvm-cov
+            # pkgs.cargo-llvm-cov
             pkgs.sccache
             pkgs.mold
           ];
