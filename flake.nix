@@ -4,6 +4,8 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     utils.url = "github:numtide/flake-utils";
+
+    # Rust toolchains/components via oxalica overlay
     rust-overlay.url = "github:oxalica/rust-overlay";
     rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
   };
@@ -60,6 +62,7 @@
           pkgs.lua-language-server
         ];
 
+        # Modern Rust setup: single, version-synchronized toolchain w/ components
         rust =
           system: pkgs:
           let
@@ -76,6 +79,9 @@
                     "llvm-tools-preview"
                   ];
                 };
+
+            # helper: true if a pkg is NOT broken
+            ok = p: !(p.meta.broken or false);
           in
           [
             rustToolchain
@@ -83,10 +89,13 @@
             pkgs.cargo-nextest
             pkgs.cargo-deny
             pkgs.cargo-audit
-            # pkgs.cargo-llvm-cov
             pkgs.sccache
-            pkgs.mold
-          ];
+          ]
+          # optional extras when available on the platform
+          ++ pkgs.lib.optionals (pkgs.stdenv.isLinux && ok pkgs.lld) [ pkgs.lld ]
+          ++ pkgs.lib.optionals (pkgs.stdenv.isLinux && ok pkgs.mold) [ pkgs.mold ]
+          # cargo-llvm-cov is sometimes marked broken; include only when healthy
+          ++ pkgs.lib.optional (ok pkgs.cargo-llvm-cov) pkgs.cargo-llvm-cov;
 
         zig = system: pkgs: [
           pkgs.zig
@@ -116,8 +125,13 @@
           if command -v sccache >/dev/null 2>&1; then
             export RUSTC_WRAPPER=$(command -v sccache)
           fi
-          if command -v mold >/dev/null 2>&1; then
-            export RUSTFLAGS="$RUSTFLAGS -C link-arg=-fuse-ld=mold"
+          # Prefer mold, else lld, if present (Linux only)
+          if [ "$(uname)" = Linux ]; then
+            if command -v mold >/dev/null 2>&1; then
+              export RUSTFLAGS="$RUSTFLAGS -C link-arg=-fuse-ld=mold"
+            elif command -v ld.lld >/dev/null 2>&1; then
+              export RUSTFLAGS="$RUSTFLAGS -C link-arg=-fuse-ld=lld"
+            fi
           fi
         '';
       };
