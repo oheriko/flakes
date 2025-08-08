@@ -1,15 +1,18 @@
 {
-  description = "Erik's base development flake with common tools and utilities";
+  description = "Erik's base development flake with common tools and utilities (Aug 2025 modernized)";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     utils.url = "github:numtide/flake-utils";
+    rust-overlay.url = "github:oxalica/rust-overlay";
+    rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
     {
       nixpkgs,
       utils,
+      rust-overlay,
       ...
     }:
     let
@@ -57,13 +60,33 @@
           pkgs.lua-language-server
         ];
 
-        rust = system: pkgs: [
-          pkgs.rust-bin.stable.latest.default
-          pkgs.cargo-watch
-          pkgs.rust-analyzer
-          pkgs.clippy
-          pkgs.rustfmt
-        ];
+        rust =
+          system: pkgs:
+          let
+            rustToolchain =
+              if builtins.pathExists ./rust-toolchain.toml then
+                pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml
+              else
+                pkgs.rust-bin.stable.latest.default.override {
+                  extensions = [
+                    "rust-src"
+                    "rustfmt"
+                    "clippy"
+                    "rust-analyzer"
+                    "llvm-tools-preview"
+                  ];
+                };
+          in
+          [
+            rustToolchain
+            pkgs.cargo-watch
+            pkgs.cargo-nextest
+            pkgs.cargo-deny
+            pkgs.cargo-audit
+            pkgs.cargo-llvm-cov
+            pkgs.sccache
+            pkgs.mold
+          ];
 
         zig = system: pkgs: [
           pkgs.zig
@@ -90,6 +113,12 @@
 
         rust = pkgs: ''
           export RUST_BACKTRACE=1
+          if command -v sccache >/dev/null 2>&1; then
+            export RUSTC_WRAPPER=$(command -v sccache)
+          fi
+          if command -v mold >/dev/null 2>&1; then
+            export RUSTFLAGS="$RUSTFLAGS -C link-arg=-fuse-ld=mold"
+          fi
         '';
       };
 
@@ -101,7 +130,12 @@
           extraHook ? "",
         }:
         let
-          pkgs = import nixpkgs { inherit system; };
+          # IMPORTANT: enable rust-overlay so pkgs.rust-bin.* works
+          pkgs = import nixpkgs {
+            inherit system;
+            overlays = [ rust-overlay.overlays.default ];
+          };
+
           basePackages = commonPackages system pkgs;
 
           langPackages =
@@ -110,7 +144,6 @@
           allPackages = basePackages ++ langPackages ++ extraPackages;
 
           baseHook = if language != null then (shellHooks.${language} or (pkgs: "")) pkgs else "";
-
           finalHook = if extraHook != "" then baseHook + "\n" + extraHook else baseHook;
         in
         pkgs.mkShell {
@@ -133,42 +166,36 @@
             inherit system extraPackages;
             language = "typescript";
           };
-
         mkAstroShell =
           extraPackages:
           mkDevShell {
             inherit system extraPackages;
             language = "astro";
           };
-
         mkPythonShell =
           extraPackages:
           mkDevShell {
             inherit system extraPackages;
             language = "python";
           };
-
         mkGoShell =
           extraPackages:
           mkDevShell {
             inherit system extraPackages;
             language = "go";
           };
-
         mkLuaShell =
           extraPackages:
           mkDevShell {
             inherit system extraPackages;
             language = "lua";
           };
-
         mkRustShell =
           extraPackages:
           mkDevShell {
             inherit system extraPackages;
             language = "rust";
           };
-
         mkZigShell =
           extraPackages:
           mkDevShell {
@@ -209,7 +236,6 @@
       };
     })
     // {
-      # Export templates that use this flake directly
       templates = {
         default = {
           path = ./templates/typescript;
