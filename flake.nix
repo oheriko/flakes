@@ -10,7 +10,7 @@
       nixpkgs,
       flake-utils,
     }:
-    flake-utils.lib.eachDefaultSystem (
+    (flake-utils.lib.eachDefaultSystem (
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
@@ -55,14 +55,16 @@
 
           go = mkDevShell [ pkgs.go ];
         };
-
-        templates = {
-          bun = {
-            path = ./templates/bun;
-            description = "Bun";
-          };
-          # ... other templates
-        };
       }
-    );
+    ))
+    // {
+      # Templates are system-independent and go at the top level
+      templates = {
+        bun = {
+          path = ./templates/bun;
+          description = "Bun";
+        };
+        # ... other templates
+      };
+    };
 }
