@@ -3,20 +3,26 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    # Could also reference your shared flake if you want
+    flake-utils.url = "github:numtide/flake-utils";
   };
 
   outputs =
-    { nixpkgs, ... }:
-    {
-      devShells.x86_64-linux.default = pkgs.mkShell {
-        buildInputs = [ pkgs.bun ];
-        shellHook = ''
-          if [ ! -f "biome.jsonc" ]; then
-            echo "📥 Fetching Biome config..."
-            curl -s -o biome.jsonc https://raw.githubusercontent.com/oheriko/configs/main/biome/biome.jsonc
-          fi
-        '';
-      };
-    };
+    { nixpkgs, flake-utils, ... }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
+      let
+        pkgs = nixpkgs.legacyPackages.${system};
+      in
+      {
+        devShells.default = pkgs.mkShell {
+          buildInputs = [ pkgs.bun ];
+          shellHook = ''
+            if [ ! -f "biome.jsonc" ]; then
+              echo "📥 Fetching Biome config..."
+              curl -s -o biome.jsonc https://raw.githubusercontent.com/oheriko/configs/main/biome/biome.jsonc
+            fi
+          '';
+        };
+      }
+    );
 }
