@@ -17,31 +17,21 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
 
-        # Core development tools shared across all environments
         baseDevTools = with pkgs; [
-          # Version control & nix
+          age
+          direnv
+          fd
           git
+          jq
+          just
           nix
           nixfmt-rfc-style
-
-          # Essential CLI tools
-          curl
-          jq
-          ripgrep
-          fd
-
-          # Development workflow
-          direnv
-          just
-
-          # Node.js ecosystem
           nodejs_24
-
-          # Python tooling
+          ripgrep
+          sops
           uv
         ];
 
-        # Helper function to create development shells
         mkDevShell =
           extraPkgs:
           pkgs.mkShell {
@@ -56,21 +46,19 @@
 
       in
       {
-        # Development shells for different stacks
         devShells = {
-          # Default: just the base tools
           default = mkDevShell [ ];
 
-          # JavaScript/TypeScript with Bun
-          bun = mkDevShell [ pkgs.bun ];
+          bun = mkDevShell [
+            pkgs.bun
+            pkgs.typescript-language-server
+          ];
 
-          # JavaScript/TypeScript with Node
           node = mkDevShell [
             pkgs.yarn
             pkgs.pnpm
           ];
 
-          # Python development
           python = mkDevShell (
             with pkgs;
             [
@@ -82,7 +70,6 @@
             ]
           );
 
-          # Rust development
           rust = mkDevShell (
             with pkgs;
             [
@@ -94,7 +81,6 @@
             ]
           );
 
-          # Go development
           go = mkDevShell (
             with pkgs;
             [
@@ -105,20 +91,17 @@
             ]
           );
 
-          # Web development (full stack)
           web = mkDevShell (
             with pkgs;
             [
-              nodejs_24
               bun
               yarn
               pnpm
               tailwindcss-language-server
-              vscode-langservers-extracted
+              typescript-language-server
             ]
           );
 
-          # DevOps/Infrastructure
           devops = mkDevShell (
             with pkgs;
             [
@@ -132,7 +115,6 @@
             ]
           );
 
-          # Data science
           data = mkDevShell (
             with pkgs;
             [
