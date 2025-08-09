@@ -1,0 +1,37 @@
+[project]
+name = "my-project"
+version = "0.1.0"
+description = "A uv workspace project"
+requires-python = ">=3.11"
+
+[tool.uv.workspace]
+members = [
+    "apps/*",
+    "packages/*"
+]
+
+[dependency-groups]
+dev = [
+    "ruff",
+    "ty",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "UP", # pyupgrade
+]
+ignore = []
+
+[tool.ty]
+# ty (Astral's type checker) configuration
+# Automatically infers settings from your project
