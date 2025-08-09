@@ -49,13 +49,16 @@
         devShells = {
           default = mkDevShell [ ];
 
-          bun = mkDevShell [
+          ts = mkDevShell [
             pkgs.bun
             pkgs.typescript-language-server
           ];
 
-          node = mkDevShell [
+          yarn = mkDevShell [
             pkgs.yarn
+          ];
+
+          pnpm = mkDevShell [
             pkgs.pnpm
           ];
 
@@ -63,10 +66,8 @@
             with pkgs;
             [
               python313
-              python313Packages.pip
-              python313Packages.virtualenv
               ruff
-              mypy
+              ty
             ]
           );
 
@@ -94,9 +95,6 @@
           web = mkDevShell (
             with pkgs;
             [
-              bun
-              yarn
-              pnpm
               tailwindcss-language-server
               typescript-language-server
             ]
@@ -128,7 +126,6 @@
             ]
           );
         };
-
       }
     );
 }
