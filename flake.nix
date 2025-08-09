@@ -1,5 +1,5 @@
 {
-  description = "Personal development environment flake with opinionated tooling";
+  description = "Composable development environments";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -17,115 +17,81 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
 
-        baseDevTools = with pkgs; [
-          age
-          direnv
-          fd
+        # Base packages that every shell should have
+        basePackages = with pkgs; [
           git
-          jq
-          just
-          nix
-          nixfmt-rfc-style
-          nodejs_24
+          curl
+          fd
           ripgrep
-          sops
-          uv
+          jq
+          tree
+          wget
+          unzip
         ];
 
-        mkDevShell =
-          extraPkgs:
+        # Language-specific package sets
+        uvPackages = with pkgs; [
+          uv
+          python3
+        ];
+        nodePackages = with pkgs; [
+          nodejs_22
+          yarn
+          pnpm
+        ];
+        rustPackages = with pkgs; [
+          rustc
+          cargo
+          rust-analyzer
+          rustfmt
+          clippy
+        ];
+        goPackages = with pkgs; [
+          go
+          gopls
+          gotools
+        ];
+        zigPackages = with pkgs; [
+          zig
+          zls
+        ];
+
+        # Shell builder helper
+        mkShell =
+          extraPackages:
           pkgs.mkShell {
-            buildInputs = baseDevTools ++ extraPkgs;
+            packages = basePackages ++ extraPackages;
             shellHook = ''
-              echo "🚀 Development environment ready!"
-              echo "📦 Available tools: ${
-                builtins.concatStringsSep ", " (map (pkg: pkg.pname or pkg.name) (baseDevTools ++ extraPkgs))
-              }"
+              echo "🚀 Development environment loaded!"
+              echo "Base tools: git, curl, fd, rg, jq, tree, wget, unzip"
+              ${if builtins.elem pkgs.uv extraPackages then "echo \"Python: uv available\"" else ""}
+              ${if builtins.elem pkgs.nodejs_22 extraPackages then "echo \"Node.js: $(node --version)\"" else ""}
+              ${if builtins.elem pkgs.rustc extraPackages then "echo \"Rust: $(rustc --version)\"" else ""}
+              ${if builtins.elem pkgs.go extraPackages then "echo \"Go: $(go version)\"" else ""}
+              ${if builtins.elem pkgs.zig extraPackages then "echo \"Zig: $(zig version)\"" else ""}
             '';
           };
-
       in
       {
-        devShells = {
-          default = mkDevShell [ ];
+        # Default shell - just base packages
+        devShells.default = mkShell [ ];
 
-          ts = mkDevShell [
-            pkgs.bun
-            pkgs.typescript-language-server
-          ];
+        # Language-specific shells
+        devShells.python = mkShell uvPackages;
+        devShells.node = mkShell nodePackages;
+        devShells.rust = mkShell rustPackages;
+        devShells.go = mkShell goPackages;
+        devShells.zig = mkShell zigPackages;
 
-          yarn = mkDevShell [
-            pkgs.yarn
-          ];
+        # Combined shells for polyglot projects
+        devShells.web = mkShell (nodePackages ++ uvPackages); # Node + Python
+        devShells.fullstack = mkShell (nodePackages ++ uvPackages ++ goPackages);
+        devShells.systems = mkShell (rustPackages ++ goPackages ++ zigPackages);
 
-          pnpm = mkDevShell [
-            pkgs.pnpm
-          ];
-
-          python = mkDevShell (
-            with pkgs;
-            [
-              python313
-              ruff
-              ty
-            ]
-          );
-
-          rust = mkDevShell (
-            with pkgs;
-            [
-              rustc
-              cargo
-              rustfmt
-              rust-analyzer
-              clippy
-            ]
-          );
-
-          go = mkDevShell (
-            with pkgs;
-            [
-              go
-              gopls
-              golangci-lint
-              delve
-            ]
-          );
-
-          web = mkDevShell (
-            with pkgs;
-            [
-              tailwindcss-language-server
-              typescript-language-server
-            ]
-          );
-
-          devops = mkDevShell (
-            with pkgs;
-            [
-              docker
-              docker-compose
-              kubectl
-              helm
-              terraform
-              aws-cli
-              gh
-            ]
-          );
-
-          data = mkDevShell (
-            with pkgs;
-            [
-              python313
-              python313Packages.jupyter
-              python313Packages.pandas
-              python313Packages.numpy
-              python313Packages.matplotlib
-              R
-              rPackages.tidyverse
-            ]
-          );
-        };
+        # Convenience aliases (same shells, different names)
+        devShells.py = self.devShells.${system}.python;
+        devShells.js = self.devShells.${system}.node;
+        devShells.rs = self.devShells.${system}.rust;
       }
     );
 }
