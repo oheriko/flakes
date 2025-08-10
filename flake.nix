@@ -50,7 +50,7 @@
         mkShell =
           extraPackages:
           pkgs.mkShell {
-            packages = basePackages ++ extraPackages;
+            packages = mcpPackages ++ extraPackages;
           };
       in
       with rec {
@@ -60,9 +60,6 @@
           rs = mkShell rsPackages;
           go = mkShell goPackages;
           zig = mkShell zigPackages;
-
-          # web = mkShell (tsPackages ++ pyPackages);
-          # fullstack = mkShell (nodePackages ++ uvPackages ++ goPackages);
           # systems = mkShell (rustPackages ++ goPackages ++ zigPackages);
         };
       };
@@ -96,11 +93,6 @@
           path = ./templates/go;
           description = "Go project with go.mod";
         };
-
-        # web = {
-        #   path = ./templates/web;
-        #   description = "Web project (Node.js + Python)";
-        # };
       };
     };
 }
