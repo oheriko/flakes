@@ -80,6 +80,7 @@
           ts = mkShell tsPackages;
           zig = mkShell zigPackages;
           # systems = mkShell (rustPackages ++ goPackages ++ zigPackages);
+          mono = mkShell (justPackages ++ tsPackages);
         };
       };
       {
