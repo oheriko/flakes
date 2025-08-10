@@ -28,7 +28,7 @@
         ];
 
         pyPackages = with pkgs; [
-          python3
+          python314
           ruff
           ty
         ];
