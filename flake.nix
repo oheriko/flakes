@@ -1,5 +1,5 @@
 {
-  description = "Composable development environments";
+  description = "Composable development environments with project templates";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -17,81 +17,90 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
 
-        # Base packages that every shell should have
-        basePackages = with pkgs; [
-          git
-          curl
-          fd
-          ripgrep
-          jq
-          tree
-          wget
-          unzip
+        mcpPackages = with pkgs; [
+          nodejs_24
+          uv
         ];
 
-        # Language-specific package sets
-        uvPackages = with pkgs; [
-          uv
+        pyPackages = with pkgs; [
           python3
+          ruff
+          ty
         ];
-        nodePackages = with pkgs; [
-          nodejs_22
-          yarn
-          pnpm
-        ];
-        rustPackages = with pkgs; [
+
+        rsPackages = with pkgs; [
           rustc
           cargo
           rust-analyzer
           rustfmt
           clippy
         ];
+
         goPackages = with pkgs; [
           go
           gopls
           gotools
         ];
+
         zigPackages = with pkgs; [
           zig
           zls
         ];
 
-        # Shell builder helper
         mkShell =
           extraPackages:
           pkgs.mkShell {
             packages = basePackages ++ extraPackages;
-            shellHook = ''
-              echo "🚀 Development environment loaded!"
-              echo "Base tools: git, curl, fd, rg, jq, tree, wget, unzip"
-              ${if builtins.elem pkgs.uv extraPackages then "echo \"Python: uv available\"" else ""}
-              ${if builtins.elem pkgs.nodejs_22 extraPackages then "echo \"Node.js: $(node --version)\"" else ""}
-              ${if builtins.elem pkgs.rustc extraPackages then "echo \"Rust: $(rustc --version)\"" else ""}
-              ${if builtins.elem pkgs.go extraPackages then "echo \"Go: $(go version)\"" else ""}
-              ${if builtins.elem pkgs.zig extraPackages then "echo \"Zig: $(zig version)\"" else ""}
-            '';
           };
       in
+      with rec {
+        devShells = {
+          default = mkShell [ ];
+          py = mkShell pyPackages;
+          rs = mkShell rsPackages;
+          go = mkShell goPackages;
+          zig = mkShell zigPackages;
+
+          # web = mkShell (tsPackages ++ pyPackages);
+          # fullstack = mkShell (nodePackages ++ uvPackages ++ goPackages);
+          # systems = mkShell (rustPackages ++ goPackages ++ zigPackages);
+        };
+      };
       {
-        # Default shell - just base packages
-        devShells.default = mkShell [ ];
-
-        # Language-specific shells
-        devShells.python = mkShell uvPackages;
-        devShells.node = mkShell nodePackages;
-        devShells.rust = mkShell rustPackages;
-        devShells.go = mkShell goPackages;
-        devShells.zig = mkShell zigPackages;
-
-        # Combined shells for polyglot projects
-        devShells.web = mkShell (nodePackages ++ uvPackages); # Node + Python
-        devShells.fullstack = mkShell (nodePackages ++ uvPackages ++ goPackages);
-        devShells.systems = mkShell (rustPackages ++ goPackages ++ zigPackages);
-
-        # Convenience aliases (same shells, different names)
-        devShells.py = self.devShells.${system}.python;
-        devShells.js = self.devShells.${system}.node;
-        devShells.rs = self.devShells.${system}.rust;
+        inherit devShells;
       }
-    );
+    )
+    // {
+      templates = {
+        default = {
+          path = ./templates/default;
+          description = "Basic project with .envrc";
+        };
+
+        py = {
+          path = ./templates/py;
+          description = "Python project with uv and pyproject.toml";
+        };
+
+        ts = {
+          path = ./templates/ts;
+          description = "TypeScript project with modern tooling";
+        };
+
+        rs = {
+          path = ./templates/rs;
+          description = "Rust project with Cargo.toml";
+        };
+
+        go = {
+          path = ./templates/go;
+          description = "Go project with go.mod";
+        };
+
+        # web = {
+        #   path = ./templates/web;
+        #   description = "Web project (Node.js + Python)";
+        # };
+      };
+    };
 }
