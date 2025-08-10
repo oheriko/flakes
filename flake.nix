@@ -96,21 +96,22 @@
           path = ./templates/just;
           description = "Just project";
         };
+        mcp = {
+          path = ./templates/mcp;
+          description = "MCP servers";
+        };
         py = {
           path = ./templates/py;
           description = "Python project with uv and pyproject.toml";
         };
-
         ts = {
           path = ./templates/ts;
           description = "TypeScript project with modern tooling";
         };
-
         rs = {
           path = ./templates/rs;
           description = "Rust project with Cargo.toml";
         };
-
         go = {
           path = ./templates/go;
           description = "Go project with go.mod";
