@@ -1,0 +1,23 @@
+# Show available commands
+default:
+    just --list
+
+# Install dependencies
+install:
+    echo "Installing dependencies..."
+
+# Run development server
+dev:
+    echo "Starting development server..."
+
+# Build project
+build:
+    echo "Building project..."
+
+# Run tests
+test:
+    echo "Running tests..."
+
+# Clean build artifacts
+clean:
+    echo "Cleaning up..."

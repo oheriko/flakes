@@ -47,7 +47,10 @@
           gotools
         ];
 
-        justPackages = [ pkgs.just-language-server ];
+        justPackages = [
+          pkgs.just
+          pkgs.just-lsp
+        ];
 
         tsPackages = with pkgs; [
           bun
@@ -89,7 +92,10 @@
           path = ./templates/default;
           description = "Basic project with .envrc";
         };
-
+        just = {
+          path = ./templates/just;
+          description = "Just project";
+        };
         py = {
           path = ./templates/py;
           description = "Python project with uv and pyproject.toml";
