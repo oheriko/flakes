@@ -70,6 +70,7 @@
       with rec {
         devShells = {
           default = mkShell [ ];
+          just = mkShell justPackages;
           py = mkShell pyPackages;
           rs = mkShell rsPackages;
           go = mkShell goPackages;
