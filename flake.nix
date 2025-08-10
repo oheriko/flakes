@@ -22,6 +22,11 @@
           uv
         ];
 
+        nixPackages = with pkgs; [
+          nix
+          nixfmt-rfc-style
+        ];
+
         pyPackages = with pkgs; [
           python3
           ruff
@@ -42,6 +47,15 @@
           gotools
         ];
 
+        justPackages = [ pkgs.just-language-server ];
+
+        tsPackages = with pkgs; [
+          bun
+          typescript-language-server
+        ];
+
+        twPackages = [ pkgs.tailwindcss-language-server ];
+
         zigPackages = with pkgs; [
           zig
           zls
@@ -50,7 +64,7 @@
         mkShell =
           extraPackages:
           pkgs.mkShell {
-            packages = mcpPackages ++ extraPackages;
+            packages = nixPackages ++ mcpPackages ++ extraPackages;
           };
       in
       with rec {
@@ -59,6 +73,7 @@
           py = mkShell pyPackages;
           rs = mkShell rsPackages;
           go = mkShell goPackages;
+          ts = mkShell tsPackages;
           zig = mkShell zigPackages;
           # systems = mkShell (rustPackages ++ goPackages ++ zigPackages);
         };
