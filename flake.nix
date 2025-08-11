@@ -63,6 +63,8 @@
 
         twPackages = [ pkgs.tailwindcss-language-server ];
 
+        yamlPackages = [ pkgs.yaml-language-server ];
+
         zigPackages = with pkgs; [
           zig
           zls
@@ -71,7 +73,7 @@
         mkShell =
           extraPackages:
           pkgs.mkShell {
-            packages = nixPackages ++ mcpPackages ++ extraPackages;
+            packages = nixPackages ++ mcpPackages ++ yamlPackages ++ extraPackages;
           };
       in
       with rec {
