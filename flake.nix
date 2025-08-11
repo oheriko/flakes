@@ -63,7 +63,10 @@
 
         twPackages = [ pkgs.tailwindcss-language-server ];
 
-        yamlPackages = [ pkgs.yaml-language-server ];
+        yamlPackages = [
+          pkgs.yamlfmt
+          pkgs.yaml-language-server
+        ];
 
         zigPackages = with pkgs; [
           zig
