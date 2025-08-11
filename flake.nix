@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    mcphub-nvim.url = "github:ravitemer/mcphub.nvim";
   };
 
   outputs =
@@ -11,6 +12,7 @@
       self,
       nixpkgs,
       flake-utils,
+      mcphub-nvim,
     }:
     flake-utils.lib.eachDefaultSystem (
       system:
@@ -18,6 +20,7 @@
         pkgs = nixpkgs.legacyPackages.${system};
 
         mcpPackages = with pkgs; [
+          mcphub-nvim.packages."${system}".default
           nodejs_24
           uv
         ];
