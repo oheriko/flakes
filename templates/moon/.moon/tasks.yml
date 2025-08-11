@@ -1,0 +1,120 @@
+# Global task configuration
+# https://moonrepo.dev/docs/config/tasks
+
+# Global task definitions that can be inherited by projects
+tasks:
+  # Development
+  dev:
+    command: 'bun run dev'
+    local: true
+    options:
+      persistent: true
+      cache: false
+  
+  # Building
+  build:
+    command: 'bun run build'
+    inputs:
+      - 'src/**/*'
+      - 'package.json'
+      - 'tsconfig*.json'
+    outputs:
+      - 'dist'
+      - 'build'
+      - '.next'
+      - 'lib'
+    deps:
+      - '^:build'
+  
+  # Type checking
+  typecheck:
+    command: 'bunx tsc --noEmit'
+    inputs:
+      - 'src/**/*'
+      - 'package.json'
+      - 'tsconfig*.json'
+    deps:
+      - '^:build'
+  
+  # Testing
+  test:
+    command: 'bun test'
+    inputs:
+      - 'src/**/*'
+      - 'test/**/*'
+      - '__tests__/**/*'
+      - '**/*.test.*'
+      - '**/*.spec.*'
+      - 'package.json'
+      - 'jest.config.*'
+      - 'vitest.config.*'
+    deps:
+      - '^:build'
+  
+  # Test with coverage
+  'test:coverage':
+    command: 'bun test --coverage'
+    inputs:
+      - 'src/**/*'
+      - 'test/**/*'
+      - '__tests__/**/*'
+      - '**/*.test.*'
+      - '**/*.spec.*'
+      - 'package.json'
+    outputs:
+      - 'coverage'
+  
+  # Linting
+  lint:
+    command: 'bun run lint'
+    inputs:
+      - 'src/**/*'
+      - '.eslintrc*'
+      - '.eslintignore'
+      - 'package.json'
+  
+  # Linting with auto-fix
+  'lint:fix':
+    command: 'bun run lint:fix'
+    inputs:
+      - 'src/**/*'
+      - '.eslintrc*'
+      - '.eslintignore'
+      - 'package.json'
+    options:
+      cache: false
+  
+  # Formatting
+  format:
+    command: 'bun run format'
+    inputs:
+      - 'src/**/*'
+      - '.prettierrc*'
+      - '.prettierignore'
+      - 'package.json'
+    options:
+      cache: false
+  
+  # Format check
+  'format:check':
+    command: 'bun run format:check'
+    inputs:
+      - 'src/**/*'
+      - '.prettierrc*'
+      - '.prettierignore'
+      - 'package.json'
+
+# Global file groups for reuse
+fileGroups:
+  sources:
+    - 'src/**/*'
+  configs:
+    - 'package.json'
+    - 'tsconfig*.json'
+    - '.eslintrc*'
+    - '.prettierrc*'
+  tests:
+    - 'test/**/*'
+    - '__tests__/**/*'
+    - '**/*.test.*'
+    - '**/*.spec.*'

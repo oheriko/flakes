@@ -1,0 +1,45 @@
+# Toolchain configuration
+# https://moonrepo.dev/docs/config/toolchain
+
+# Node.js configuration
+node:
+  # Auto-detect version from .nvmrc, package.json engines, or use latest LTS
+  version: '20.0.0' # or 'latest', '18.0.0', etc.
+  
+  # Package manager settings
+  packageManager: 'bun'
+  
+  # Bun configuration
+  bun:
+    version: 'latest'
+
+# TypeScript configuration
+typescript:
+  # Auto-detect from package.json or use specific version
+  version: 'latest'
+  # syncProjectReferences: true
+  # routeOutDirToCache: true
+
+# Rust (if using Rust tools)
+# rust:
+#   version: 'latest'
+
+# Python (if using Python tools)
+# python:
+#   version: '3.11.0'
+
+# Go (if using Go tools)
+# go:
+#   version: 'latest'
+
+# Environment variables available to all tools
+# env:
+#   NODE_ENV: 'development'
+
+# Tool-specific settings
+settings:
+  # Automatically install dependencies before running tasks
+  autoInstall: true
+  
+  # Inherit environment variables from parent process
+  inheritEnv: true

@@ -1,0 +1,37 @@
+# Moon workspace configuration
+# https://moonrepo.dev/docs/config/workspace
+
+# Define project discovery patterns
+projects:
+  - 'apps/*'
+  - 'packages/*'
+  - 'libs/*'
+  - 'tools/*'
+
+# Version control settings
+vcs:
+  manager: 'git'
+  defaultBranch: 'main'
+
+# Runner configuration
+runner:
+  # Cache outputs and logs
+  cacheLifetime: '7 days'
+  # Run tasks in topological order respecting dependencies
+  inheritColorsForPipedTasks: true
+
+# Workspace-level dependencies
+dependencyManager:
+  # Use bun as the package manager
+  packageManager: 'bun'
+  
+# Notification settings
+notifier:
+  webhookUrl: null
+
+# Telemetry (disable for privacy)
+telemetry: false
+
+# Extensions and integrations
+# experiments:
+#   - 'taskInheritance'

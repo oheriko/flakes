@@ -1,0 +1,62 @@
+# Project-level moon configuration
+# Place this file in each project directory (apps/*, packages/*, etc.)
+# https://moonrepo.dev/docs/config/project
+
+# Project type and language
+type: 'application' # or 'library'
+language: 'typescript' # or 'javascript'
+
+# Dependencies on other projects in the workspace
+dependsOn:
+  # Example: this project depends on shared libraries
+  # - 'packages/shared'
+  # - 'packages/utils'
+
+# Project-specific tasks (inherit from global tasks.yml and customize)
+tasks:
+  # Inherit global tasks and customize as needed
+  build:
+    # Override global build command if needed
+    # command: 'custom build command'
+    
+  # Add project-specific tasks
+  start:
+    command: 'bun run start'
+    local: true
+    options:
+      persistent: true
+      cache: false
+    deps:
+      - 'build'
+  
+  # Database tasks (for apps that use databases)
+  # db:migrate:
+  #   command: 'bun run db:migrate'
+  #   local: true
+  #   options:
+  #     cache: false
+  
+  # db:seed:
+  #   command: 'bun run db:seed'
+  #   local: true
+  #   options:
+  #     cache: false
+
+# File groups specific to this project
+fileGroups:
+  # Add project-specific file groups
+  # assets:
+  #   - 'public/**/*'
+  #   - 'assets/**/*'
+
+# Environment variables for this project
+# env:
+#   NODE_ENV: 'development'
+#   API_PORT: '3000'
+
+# Project metadata
+metadata:
+  name: 'project-name'
+  description: 'Project description'
+  # owner: 'team-name'
+  # maintainers: ['user1', 'user2']

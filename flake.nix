@@ -52,6 +52,10 @@
           pkgs.just-lsp
         ];
 
+        moonPackages = [
+          pkgs.moon
+        ];
+
         tsPackages = with pkgs; [
           bun
           typescript-language-server
@@ -74,13 +78,14 @@
         devShells = {
           default = mkShell [ ];
           just = mkShell justPackages;
+          moon = mkShell moonPackages;
           py = mkShell pyPackages;
           rs = mkShell rsPackages;
           go = mkShell goPackages;
           ts = mkShell tsPackages;
           zig = mkShell zigPackages;
           # systems = mkShell (rustPackages ++ goPackages ++ zigPackages);
-          mono = mkShell (justPackages ++ tsPackages);
+          mono = mkShell (moonPackages ++ tsPackages ++ rustPackages);
         };
       };
       {
@@ -96,6 +101,10 @@
         just = {
           path = ./templates/just;
           description = "Just project";
+        };
+        moon = {
+          path = ./templates/moon;
+          description = "Moonrepo project";
         };
         mcp = {
           path = ./templates/mcp;
