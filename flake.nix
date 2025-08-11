@@ -84,8 +84,8 @@
           go = mkShell goPackages;
           ts = mkShell tsPackages;
           zig = mkShell zigPackages;
-          # systems = mkShell (rustPackages ++ goPackages ++ zigPackages);
-          mono = mkShell (moonPackages ++ tsPackages ++ rustPackages);
+          # systems = mkShell (rsPackages ++ goPackages ++ zigPackages);
+          mono = mkShell (moonPackages ++ tsPackages ++ rsPackages);
         };
       };
       {
